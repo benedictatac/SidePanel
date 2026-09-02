@@ -1,0 +1,36 @@
+
+{
+
+"manifest_version": 2, 
+"name": "Word Lookup", 
+"sidebar_action" : {
+
+    "default_icon":[{
+        "16": "button/geo-16.png", 
+        "32": "button/geo-32.png"
+    }], 
+    "default_title": "Word Lookup Sidebar", 
+    "default_panel": "./sidebar/sidebar.html", 
+    "open_at_install": true
+},
+"permissions":[
+        "storage",
+        "activeTab"
+], 
+"hostPermissions": 
+[
+    {
+        "NOTION_API": "NOTION_API_HERE", 
+        "DICT_API": "DICT_API_HERE", 
+        "DICT_API_FALLBACK":"other api here"
+    }
+], 
+"background":
+[
+    {
+        "scripts": ["background.js"],
+        "persistent": false
+    }
+]
+
+}
