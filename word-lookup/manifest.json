@@ -13,18 +13,15 @@
     "default_panel": "./sidebar/sidebar.html", 
     "open_at_install": true
 },
-"permissions":[
+"permissions":[ 
         "storage",
         "activeTab"
 ], 
-"hostPermissions": 
-[
-    {
-        "NOTION_API": "NOTION_API_HERE", 
-        "DICT_API": "DICT_API_HERE", 
-        "DICT_API_FALLBACK":"other api here"
-    }
-], 
+"host_permissions": [
+    "https://api.dictionaryapi.dev/*",
+    "https://en.wiktionary.org/*",
+    "https://api.notion.com/*"
+],
 "background":
 [
     {
