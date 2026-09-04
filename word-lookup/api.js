@@ -55,26 +55,72 @@ async function getDefinition(word)
 
     try
     {   
-        let response = fetchWrapper(primaryURL, window.CONFIG.DEFAULT_TIMEOUT_PRIMARYDICT, options = {method: 'GET'})
-        return response.json()
+        let response = await fetchWrapper(primaryURL, window.CONFIG.DEFAULT_TIMEOUT_PRIMARYDICT, options = {method: 'GET'})
         
+        if(!response.ok)
+            throw new Error("Error produced")
+
+        const data = await response.json()
+        return parsingData(data) // return a parsed data
+
     }
     catch(firstError)
     {   
         console.error(`Could not find due to: ${firstError.message}`)
         try
             {
-                let fallback_response = fetchWrapper(fallbackURL, window.CONFIG.TIMEOUT_FALLBACKDICT, options = {method: 'GET'})
-                return fallback_response.json()
+                let fallback_response = await fetchWrapper(fallbackURL, window.CONFIG.TIMEOUT_FALLBACKDICT, options = {method: 'GET'})
+                if(!fallback_response.ok)
+                throw new Error("Error produced")
+
+                const fallback_data = await fallback_response.json()
+                return parsingData(fallback_data) // return a parsed data
             }
         catch(secondError)
         { // in this case, we have an error where we actually don't find the word, 
-            console.error(`Definition not found: ${secondError.message}`)
+
+            if(secondError.name == "Term not Found")
+            {console.error(`Definition not found: ${secondError.message}`)
             const defineError = new Error("Could not find definition for both", {cause:secondError})
             defineError.name = "MissingWord"
             throw defineError
+            }
         }
     }
 
+}
+
+
+async function parsingPrimaryDictData(jsonData)
+{
+    let data = jsonData
+    //Check #1: Is it already parsed data? 
+    //Check #2: Is 
+
+    if(data == 'object' && data != null)
+    {
+        console.error("Data is already parsed")
+        return data
+    }
+    if(data == 'string')
+    {
+        try{
+        return JSON.parse(data)
+    }
+    catch(error)
+    {
+        console.error("Data could not be parsed",error.message, {case:error})
+        return null
+    }
+    }
+}
+
+
+
+
+//after data is parsed, we save it to notion
+// we would need to call the API, requires the api key and api url to do a write operation 
+async function writeToNotion(parsedData)
+{
 
 }
