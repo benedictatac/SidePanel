@@ -37,8 +37,8 @@ async function handleSearch(searchedWord)
         }
         if(allowed_characters.test(searchedWord) || hasTrailingWhiteSpace.test(searchedWord) || hasAnyWhiteSpace.test(searchedWord)){}else{console.error()
             return} 
-        let parsed_data = getDefinition(searchedWord) // once this response is gottenback -> we display it to the user
-        if(parsed_data == 'object' && parsed_data != null)
+        let parsed_data = getDefinition(searchedWord) // once this response is gottenback -> we display it to the user, it is already parsed and normalized data (should be)
+        if(typeof parsed_data == 'object' && parsed_data != null)
         {
             renderDefinition(data)
         }

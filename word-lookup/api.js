@@ -61,7 +61,8 @@ async function getDefinition(word)
             throw new Error("Error produced")
 
         const data = await response.json()
-        return parsingData(data) // return a parsed data
+
+        return normalizingPrimaryDict(data) // return a parsed and normalized data
 
     }
     catch(firstError)
@@ -74,7 +75,7 @@ async function getDefinition(word)
                 throw new Error("Error produced")
 
                 const fallback_data = await fallback_response.json()
-                return parsingData(fallback_data) // return a parsed data
+                return normalizingSecondaryDict(fallback_data) // return a parsed and normalized data
             }
         catch(secondError)
         { // in this case, we have an error where we actually don't find the word, 
@@ -91,30 +92,37 @@ async function getDefinition(word)
 }
 
 
-async function parsingPrimaryDictData(jsonData)
+async function normalizingPrimaryDict(objectData)
 {
-    let data = jsonData
-    //Check #1: Is it already parsed data? 
-    //Check #2: Is 
-
-    if(data == 'object' && data != null)
+    let data = objectData
+    const root = data[0]
+    
+    const targetShape =
     {
-        console.error("Data is already parsed")
-        return data
+        word: root.word, 
+        definition: root.meanings?.[0]?.definitions?.[0]?.definition || "", 
+        example: root.meanings?.[0].definitions?.[0]?.example || "", 
     }
-    if(data == 'string')
+    try{return targetShape;
+    }catch(error)
     {
-        try{
-        return JSON.parse(data)
-    }
-    catch(error)
-    {
-        console.error("Data could not be parsed",error.message, {case:error})
-        return null
-    }
-    }
+        console.error("Error extracting targetShape:" ,  error.message)
+    }   
 }
 
+async function normalizingSecondaryDict(objectData)
+{
+    const data = objectData
+    const root = data.en[0]
+
+    const targetShape = {
+        definition: root.definitions?.[0]?.definition, 
+        example: root.definitions?.[0].examples?.[0]?.example, 
+    }
+
+    try{return targetShape;}
+    catch(error){console.error("Error extracting targetShape"), error.message}
+}
 
 
 
