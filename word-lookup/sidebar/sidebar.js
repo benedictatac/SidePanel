@@ -44,4 +44,7 @@ async function handleSearch(searchedWord)
         }
 }
 
-function renderDefinition(){}
+function renderDefinition(parsedData)
+{
+    let dataId = parsedData.ID
+}

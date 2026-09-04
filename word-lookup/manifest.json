@@ -3,13 +3,13 @@
 
 "manifest_version": 2, 
 "name": "Word Lookup",
-"version": 1, 
+"version": "1", 
 "sidebar_action" : {
 
-    "default_icon":[{
+    "default_icon":{
         "16": "button/geo-16.png", 
         "32": "button/geo-32.png"
-    }], 
+    }, 
     "default_title": "Word Lookup Sidebar", 
     "default_panel": "./sidebar/sidebar.html", 
     "open_at_install": true
@@ -24,11 +24,9 @@
     "https://api.notion.com/*"
 ],
 "background":
-[
     {
         "scripts": ["background.js"],
         "persistent": false
     }
-]
 
 }
