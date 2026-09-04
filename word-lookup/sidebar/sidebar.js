@@ -9,8 +9,19 @@ Step 4: Submit button -> submits to notion database -> Notion API called
 
 
 
+async function fetchWordFromDict(searchedWord)
+{   
 
-async function fetchWordFromDict(string)
-{
 
-}
+    trimmed_word = searchedWord.trim().toLowerCase()
+    // check if word is trimmed and lower cased
+    
+    
+    
+    if(!searchedWord.trim().toLowerCase() || searchedWord != string)
+    {
+        
+
+        
+    }
+    }

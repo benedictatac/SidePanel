@@ -2,7 +2,8 @@
 {
 
 "manifest_version": 2, 
-"name": "Word Lookup", 
+"name": "Word Lookup",
+"version": 1, 
 "sidebar_action" : {
 
     "default_icon":[{
