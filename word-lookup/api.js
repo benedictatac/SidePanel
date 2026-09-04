@@ -1,7 +1,5 @@
 // file that contains the api call for Notion and the Dictionary 
 
-const baseURL = "DICTIONARY_API = https://api.dictionaryapi.dev/api/v2/entries/en"
-const baseURL_fallback = " https://en.wiktionary.org/api/rest_v1/page/definition/"
 
 
 
@@ -46,6 +44,37 @@ async function fetchWrapper(URL, timeout = 5000, options = Object)
         }
     }
     finally{clearTimeout()}
+}
+
+
+
+async function getDefinition(word)
+{
+    const primaryURL = `${window.CONFIG.DICTIONARY_API}/${encodedURIComponent(word)}`
+    const fallbackURL = `${window.CONFIG.fallbackURL}/${encodedURIComponent(word)}`
+
+    try
+    {   
+        let response = fetchWrapper(primaryURL, window.CONFIG.DEFAULT_TIMEOUT_PRIMARYDICT, options = {method: 'GET'})
+        return response.json()
+        
+    }
+    catch(firstError)
+    {   
+        console.error(`Could not find due to: ${firstError.message}`)
+        try
+            {
+                let fallback_response = fetchWrapper(fallbackURL, window.CONFIG.TIMEOUT_FALLBACKDICT, options = {method: 'GET'})
+                return fallback_response.json()
+            }
+        catch(secondError)
+        { // in this case, we have an error where we actually don't find the word, 
+            console.error(`Definition not found: ${secondError.message}`)
+            const defineError = new Error("Could not find definition for both", {cause:secondError})
+            defineError.name = "MissingWord"
+            throw defineError
+        }
+    }
 
 
 }
