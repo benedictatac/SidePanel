@@ -50,8 +50,8 @@ async function fetchWrapper(URL, timeout = 5000, options = Object)
 
 async function getDefinition(word)
 {
-    const primaryURL = `${window.CONFIG.DICTIONARY_API}/${encodedURIComponent(word)}`
-    const fallbackURL = `${window.CONFIG.fallbackURL}/${encodedURIComponent(word)}`
+    const primaryURL = `${window.CONFIG.DICTIONARY_API}/${encodeURIComponent(word)}`
+    const fallbackURL = `${window.CONFIG.fallbackURL}/${encodeURIComponent(word)}`
 
     try
     {   
@@ -61,22 +61,12 @@ async function getDefinition(word)
             throw new Error("Error produced")
 
         const data = await response.json()
-        let normalizedData = normalizingPrimaryDict(data)
-        if(typeof normalizedData == "undefined")
-            {
-                const undefinedError =  new Error("Parsed data was undefined")
-                undefinedError.name = "UndefinedError"
-                throw undefinedError
-            }// return a parsed and normalized data
-        else{ return normalizedData} 
+        let normalizedData = normalizingPrimaryDict(data, word)
+        return normalizedData
     }
     catch(firstError)
-    {   
-        if(firstError.name === "UndefinedError")
-            console.error(`Could not find due to: ${firstError.message}`)
-        else{
-            console.error("Parsed Data gave error", firstError.message)
-        }
+        {   
+            console.error("Parsed Data gave error", firstError.message)           
         try
             {
                 let fallback_response = await fetchWrapper(fallbackURL, window.CONFIG.TIMEOUT_FALLBACKDICT, options = {method: 'GET'})
@@ -84,70 +74,45 @@ async function getDefinition(word)
                 throw new Error("Error produced")
                 
                 const fallback_data = await fallback_response.json()
-                if(typeof normalizingSecondaryDict(fallback_data) === "undefined")
-                    {
-                        const fallbackError = new Error("Secondary Dict Data was undefined")
-                        fallbackError.name = "SecondDictUndefinedError"
-                        throw fallbackError
-
-                    } // return a parsed and normalized data
-                else{return normalizingSecondaryDict(fallback_data)}
+                let finalResult = normalizingSecondaryDict(fallback_data, word) 
+                 return finalResult
             }
         catch(secondError)
         { // in this case, we have an error where we actually don't find the word, 
-
-            if(secondError.name == "Term not Found")
-            {console.error(`Definition not found: ${secondError.message}`), {cause:secondError}}
-            if(secondError.name == "SecondDictUndefinedError")
-            {console.error(`Secondary Dict was also undefined, ${secondError.message}`)}
-        }
+            console.error("Could not Normalize Word", secondError.message)
+            const finalResultError = new Error(`Error in normalizing data`, {cause:secondError})
+            finalResultError.name = "ErrorNormalization"
+            throw finalResultError
+        }}
     }
 
-}
+
 
 
 function normalizingPrimaryDict(objectData, searchedWord)
 {
-    let data = objectData
-   try{
-        const root = data?.[0]
-        
+        let data = objectData
+        const root = data?.[0] // return undefined in case it cannot get the data 
         const targetShape =
         {
             word: root.word || searchedWord, 
-            definition: definition || "", 
+            definition: root.meanings?.[0].definitions?.[0]?.definition || "", 
             example: root.meanings?.[0]?.definitions?.[0]?.example || "", 
         }
-
     return targetShape;
-    }catch(error)
-    {
-
-        console.error("Error extracting targetShape:",  error.message)
-
-    }   
 }
 
 function normalizingSecondaryDict(objectData, searchedWord)
 {
         let data = objectData
 
-    try{
-        const root = data.en[0] 
-
-
+        const root = data?.en?.[0]
         const targetShape = {
-            word: searchedWord,
-            definition: root.definitions?.[0]?.definition, 
-            example: root.definitions?.[0]?.examples?.[0]?.example, 
-            }
-
-    return targetShape;}
-    catch(error){
-  
-        console.error("Error extracting targetShape", error.message)}
-}
-
+                word: searchedWord,
+                definition: stripHtmlContent(root.definitions?.[0]?.definition || ""), 
+                example: stripHtmlContent(root.definitions?.[0]?.examples?.[0]?.example || ""), 
+                }
+                return targetShape}
 
 
 //after data is parsed, we save it to notion
