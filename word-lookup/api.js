@@ -61,67 +61,91 @@ async function getDefinition(word)
             throw new Error("Error produced")
 
         const data = await response.json()
-
-        return normalizingPrimaryDict(data) // return a parsed and normalized data
-
+        let normalizedData = normalizingPrimaryDict(data)
+        if(typeof normalizedData == "undefined")
+            {
+                const undefinedError =  new Error("Parsed data was undefined")
+                undefinedError.name = "UndefinedError"
+                throw undefinedError
+            }// return a parsed and normalized data
+        else{ return normalizedData} 
     }
     catch(firstError)
     {   
-        console.error(`Could not find due to: ${firstError.message}`)
+        if(firstError.name === "UndefinedError")
+            console.error(`Could not find due to: ${firstError.message}`)
+        else{
+            console.error("Parsed Data gave error", firstError.message)
+        }
         try
             {
                 let fallback_response = await fetchWrapper(fallbackURL, window.CONFIG.TIMEOUT_FALLBACKDICT, options = {method: 'GET'})
                 if(!fallback_response.ok)
                 throw new Error("Error produced")
-
+                
                 const fallback_data = await fallback_response.json()
-                return normalizingSecondaryDict(fallback_data) // return a parsed and normalized data
+                if(typeof normalizingSecondaryDict(fallback_data) === "undefined")
+                    {
+                        const fallbackError = new Error("Secondary Dict Data was undefined")
+                        fallbackError.name = "SecondDictUndefinedError"
+                        throw fallbackError
+
+                    } // return a parsed and normalized data
+                else{return normalizingSecondaryDict(fallback_data)}
             }
         catch(secondError)
         { // in this case, we have an error where we actually don't find the word, 
 
             if(secondError.name == "Term not Found")
-            {console.error(`Definition not found: ${secondError.message}`)
-            const defineError = new Error("Could not find definition for both", {cause:secondError})
-            defineError.name = "MissingWord"
-            throw defineError
-            }
+            {console.error(`Definition not found: ${secondError.message}`), {cause:secondError}}
+            if(secondError.name == "SecondDictUndefinedError")
+            {console.error(`Secondary Dict was also undefined, ${secondError.message}`)}
         }
     }
 
 }
 
 
-async function normalizingPrimaryDict(objectData)
+function normalizingPrimaryDict(objectData, searchedWord)
 {
     let data = objectData
-    const root = data[0]
-    
-    const targetShape =
-    {
-        word: root.word, 
-        definition: root.meanings?.[0]?.definitions?.[0]?.definition || "", 
-        example: root.meanings?.[0].definitions?.[0]?.example || "", 
-    }
-    try{return targetShape;
+   try{
+        const root = data?.[0]
+        
+        const targetShape =
+        {
+            word: root.word || searchedWord, 
+            definition: definition || "", 
+            example: root.meanings?.[0]?.definitions?.[0]?.example || "", 
+        }
+
+    return targetShape;
     }catch(error)
     {
-        console.error("Error extracting targetShape:" ,  error.message)
+
+        console.error("Error extracting targetShape:",  error.message)
+
     }   
 }
 
-async function normalizingSecondaryDict(objectData)
+function normalizingSecondaryDict(objectData, searchedWord)
 {
-    const data = objectData
-    const root = data.en[0]
+        let data = objectData
 
-    const targetShape = {
-        definition: root.definitions?.[0]?.definition, 
-        example: root.definitions?.[0].examples?.[0]?.example, 
-    }
+    try{
+        const root = data.en[0] 
 
-    try{return targetShape;}
-    catch(error){console.error("Error extracting targetShape"), error.message}
+
+        const targetShape = {
+            word: searchedWord,
+            definition: root.definitions?.[0]?.definition, 
+            example: root.definitions?.[0]?.examples?.[0]?.example, 
+            }
+
+    return targetShape;}
+    catch(error){
+  
+        console.error("Error extracting targetShape", error.message)}
 }
 
 
@@ -131,4 +155,12 @@ async function normalizingSecondaryDict(objectData)
 async function writeToNotion(parsedData)
 {
 
+}
+
+
+function stripHtmlContent(htmlValue)
+{
+    const throwaway = document.createElement("span")
+    throwaway.innerHTML = htmlValue
+    return throwaway.textContent 
 }

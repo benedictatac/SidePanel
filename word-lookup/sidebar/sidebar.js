@@ -44,7 +44,7 @@ async function handleSearch(searchedWord)
         }
 }
 
-function renderDefinition(parsedData)
+function renderDefinition(parsedData, word)
 {
-    let dataId = parsedData.ID
+    let dataId = parsedData.getElementById(word)
 }
