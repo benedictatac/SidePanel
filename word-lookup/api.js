@@ -119,7 +119,7 @@ function normalizingSecondaryDict(objectData, searchedWord)
 // we would need to call the API, requires the api key and api url to do a write operation 
 async function writeToNotion(parsedData)
 {
-
+    
 }
 
 
