@@ -9,7 +9,7 @@
     <div>
         <label for= "site-search">Search a word: </label>
         <input type="text" id = "site-search" placeholder="Enter a word...">
-        <button type = "submit">Search</button>
+        <button id = "search-button" type = "submit">Search</button>
     </div>
         <div>
             <h1>Word Definition: </h1>
@@ -48,11 +48,16 @@
   <!-- Action Buttons -->
   <div class="button-group">
     <button id="save-settings-btn" class="btn-primary">Save Credentials</button>
-    <button id="back-btn" class="btn-secondary">← Back</button>
+    <button id="back-btn" class="btn-secondary">Back</button>
   </div>
 
   <!-- Status Feedback -->
   <p id="status-message" class="status-text" aria-live="polite"></p>
 </div>        </div>
+
+<script src ="../config.js"></script>
+<script src = "../api.js"></script>
+<script src = "sidebar.js"></script>
+
     </body>
 </html>

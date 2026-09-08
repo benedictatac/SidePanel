@@ -23,19 +23,19 @@ async function handleMessage(message, sender, sendResponse)
                 parent:{database_id: dbId}, 
                 properties: {
                 // Title column (e.g., "Word")
-                "Word": {
+                "word": {
                 title: [
                     { text: { content: message.message.word } }
                 ]
                 },
                 // Rich Text column (e.g., "Definition")
-                "Definition": {
+                "definition": {
                 rich_text: [
                     { text: { content: message.message.definition } }
                 ]
                 },
                 // Rich Text column (e.g., "Example")
-                "Example": {
+                "example": {
                 rich_text: [
                     { text: { content: message.message.example || "" } }
                 ]
@@ -46,14 +46,20 @@ async function handleMessage(message, sender, sendResponse)
         console.log("Notion Payload:", notionPayload)
 
         try{
-        const response = await fetchWrapper(window.CONFIG.NOTION_API_URL, options = {
-            method:"POST", 
-            headers:
-            {  "Authorization": `Bearer ${notionId}`,
-                'Notion-Version': '2022-06-28', // Required by Notion
+        // Pass all 3 parameters explicitly:
+            const response = await fetchWrapper(
+            window.CONFIG.NOTION_API_URL, 
+            window.CONFIG.NOTION_API_CALL_TIMEOUT, 
+            {
+                method: "POST", 
+                headers: {
+                "Authorization": `Bearer ${notionId}`,
+                "Notion-Version": window.CONFIG.NOTION_VERSION_KEY,
                 "Content-Type": "application/json"
-            }, 
-            body: JSON.stringify(notionPayload)})
+                }, 
+                body: JSON.stringify(notionPayload)
+            }
+            );
 
         if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);

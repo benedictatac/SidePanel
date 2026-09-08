@@ -7,7 +7,7 @@
 async function fetchWrapper(URL, timeout = 5000, options = Object)
 {
     //Step 1: Crteate controller which will cancel the whole process using .abort()
-    const controller = AbortController()
+    const controller = new AbortController()
 
     //Step 2: Scheduling the cancel, give it to variable we can use to cancel the countdown if it does not reach 0 
     const timerID = setTimeout(() => {
@@ -51,7 +51,7 @@ async function fetchWrapper(URL, timeout = 5000, options = Object)
 async function getDefinition(word)
 {
     const primaryURL = `${window.CONFIG.DICTIONARY_API}/${encodeURIComponent(word)}`
-    const fallbackURL = `${window.CONFIG.fallbackURL}/${encodeURIComponent(word)}`
+    const fallbackURL = `${window.CONFIG.FALLBACK_DICT_API}/${encodeURIComponent(word)}`
 
     try
     {   

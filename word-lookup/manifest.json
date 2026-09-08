@@ -16,17 +16,13 @@
 },
 "permissions":[ 
         "storage",
-        "activeTab"
+        "activeTab", 
+        "https://api.dictionaryapi.dev/*",
+        "https://en.wiktionary.org/*",
+        "https://api.notion.com/*"
 ], 
-"host_permissions": [
-    "https://api.dictionaryapi.dev/*",
-    "https://en.wiktionary.org/*",
-    "https://api.notion.com/*"
-],
 "background":
     {
-        "scripts": ["background.js"],
-        "persistent": false
-    }
+        "scripts": ["background.js", "api.js", "config.js"]        }
 
 }
