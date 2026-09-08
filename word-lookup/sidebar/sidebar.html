@@ -19,8 +19,40 @@
             <button id = "save-button">Save to Notion</button>
         </div>
         <div>
-            <button type = "button" aria-label> <i class="fa fa-gear"></i> Settings</button>
-        </div>
+<!-- Settings View Panel -->
+<div id="settings-panel" class="panel">
+  <h2>Notion Settings</h2>
+
+  <!-- Token Input -->
+  <div class="form-group">
+    <label for="notion-token-input">Integration Token</label>
+    <input 
+      type="password" 
+      id="notion-token-input" 
+      placeholder="ntn_... or secret_..."
+      autocomplete="off"
+    />
+  </div>
+
+  <!-- Database ID Input -->
+  <div class="form-group">
+    <label for="notion-db-input">Database ID</label>
+    <input 
+      type="text" 
+      id="notion-db-input" 
+      placeholder="e.g. 32-character ID"
+      autocomplete="off"
+    />
+  </div>
+
+  <!-- Action Buttons -->
+  <div class="button-group">
+    <button id="save-settings-btn" class="btn-primary">Save Credentials</button>
+    <button id="back-btn" class="btn-secondary">← Back</button>
+  </div>
+
+  <!-- Status Feedback -->
+  <p id="status-message" class="status-text" aria-live="polite"></p>
+</div>        </div>
     </body>
 </html>
-
