@@ -5,14 +5,17 @@ Step 2: Word lookup -> API calls to Dictionary, in case of emergency -> will go 
 Step 3: Rendering the results to the user 
 Step 4: Submit button -> submits to notion database -> Notion API called 
 */
+let currentResult = null;
+let currentBox = null;
+
 
 const container_name = "output-search";
 const saveButton = "save-button";
 const settingsButton = "submit";
-let currentResult = null;
 const searchButton = "search-button"
-
-
+const secondInputName = "input-box"
+const explanationContent = "text-areaBox"
+const sendToNotionButton = "saveToNotion2"
 // Wrap DOM selections and listeners inside DOMContentLoaded to prevent null errors
 document.addEventListener("DOMContentLoaded", () => {
   const button1 = document.getElementById(saveButton);
@@ -25,10 +28,16 @@ document.addEventListener("DOMContentLoaded", () => {
     const searchValue = document.getElementById("site-search").value
     handleSearch(searchValue)
   })}
+
+  const sendToNotion = document.getElementById(sendToNotionButton)
+  if(sendToNotion){sendToNotion.addEventListener("click", inputSaveButton2)}
   
   loadSettingsTokens();
   initSaveButton();
 });
+
+
+
 
 async function handleSearch(searchedWord) {   
   if (searchedWord === null) { return; }
@@ -88,7 +97,7 @@ function initSaveButton() {
     console.warn("Save button '#save-settings-btn' not found in DOM.");
     return;
   }
-
+// saving the settings (keys for persistence)
   saveBtn.addEventListener("click", async () => {
     try {
       const tokenInput = document.getElementById("notion-token-input");
@@ -166,10 +175,39 @@ function buildElement(tagName, textValue, parent) {
   parent.appendChild(el);
 }
 
-
-
-function inputSaveButton2()
+async function inputSaveButton2()
 {
-  
+
+  const getElementInput = document.getElementById(secondInputName)
+  const getElementText = document.getElementById(explanationContent)
+
+
+  const trimmedElementInput = getElementInput.value.trim().toLowerCase()
+  const trimmedElementText = getElementText.value.trim().toLowerCase()
+  if(!trimmedElementInput || !trimmedElementText){return;}
+
+    
+    try{  const response = await browser.runtime.sendMessage({
+      action:"Send To Notion",
+      message1:trimmedElementInput, 
+      message2: trimmedElementText,
+    })
+      
+      console.log("Received response:", response ? response.reply : "No response");
+
+      // Fix: Keep response evaluation inside block scope
+      if (response && (response.status === "success" || response.reply === "Successfully saved to Notion!")) {
+        console.log("Success:", response.reply);
+      } else {
+        console.error("Failed to Save:", response ? response.reply : "Unknown error");
+      }
+    }
+    catch (error) {
+    console.error("Error sending message:", error);
+  }
+
+
+
+      
 }
 
