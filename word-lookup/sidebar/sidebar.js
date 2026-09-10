@@ -193,9 +193,9 @@ async function inputSaveButton2()
 
 
   
-  // const trimmedElementInput = getElementInput.value.trim().toLowerCase()
-  // const trimmedElementText = getElementText.value.trim().toLowerCase()
-  if(!getElementInput || !getElementText){return;}
+  const trimmedElementInput = getElementInput.value.trim()
+  const trimmedElementText = getElementText.value.trim()
+  if(!trimmedElementInput || !trimmedElementText){return;}
 
     
     try{  const response = await browser.runtime.sendMessage({
