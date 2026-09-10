@@ -120,3 +120,5 @@ function stripHtmlContent(htmlValue)
     throwaway.innerHTML = htmlValue
     return throwaway.textContent 
 }
+
+
