@@ -16,6 +16,7 @@ const searchButton = "search-button"
 const secondInputName = "input-box"
 const explanationContent = "text-areaBox"
 const sendToNotionButton = "saveToNotion2"
+const statMessage = "stat-message"
 // Wrap DOM selections and listeners inside DOMContentLoaded to prevent null errors
 document.addEventListener("DOMContentLoaded", () => {
   const button1 = document.getElementById(saveButton);
@@ -180,7 +181,7 @@ async function inputSaveButton2()
 
   const getElementInput = document.getElementById(secondInputName)
   const getElementText = document.getElementById(explanationContent)
-
+  const getElementStatMessage = document.getElementById(statMessage)
 
   const trimmedElementInput = getElementInput.value.trim().toLowerCase()
   const trimmedElementText = getElementText.value.trim().toLowerCase()
@@ -196,9 +197,12 @@ async function inputSaveButton2()
       console.log("Received response:", response ? response.reply : "No response");
 
       // Fix: Keep response evaluation inside block scope
-      if (response && (response.status === "success" || response.reply === "Successfully saved to Notion!")) {
-        console.log("Success:", response.reply);
-      } else {
+      if (response && (response.status === "success" || response.reply === "Successfully saved to Notion!")) 
+        {
+          if(getElementStatMessage){getElementStatMessage.textContent = "Successfully sent to Notion!"}
+          console.log("Success:", response.reply);
+      } 
+      else {
         console.error("Failed to Save:", response ? response.reply : "Unknown error");
       }
     }

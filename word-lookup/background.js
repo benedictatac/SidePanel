@@ -91,13 +91,13 @@ async function handleMessage(message, sender, sendResponse)
                 parent:{database_id: dbId}, 
                 properties: {
                 // Title column (e.g., "Word")
-                "word/statement": {
+                "Word/Statement": {
                 title: [
                     { text: { content: message.message1 } }
                 ]
                 },
                 // Rich Text column (e.g., "Definition")
-                "explanation": {
+                "Explanations": {
                 rich_text: [
                     { text: { content: message.message2} }
                 ]
