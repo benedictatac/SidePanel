@@ -193,9 +193,9 @@ async function inputSaveButton2()
 
 
   
-  const trimmedElementInput = getElementInput.value.trim().toLowerCase()
-  const trimmedElementText = getElementText.value.trim().toLowerCase()
-  if(!trimmedElementInput || !trimmedElementText){return;}
+  // const trimmedElementInput = getElementInput.value.trim().toLowerCase()
+  // const trimmedElementText = getElementText.value.trim().toLowerCase()
+  if(!getElementInput || !getElementText){return;}
 
     
     try{  const response = await browser.runtime.sendMessage({
@@ -211,7 +211,7 @@ async function inputSaveButton2()
         {
           if(getElementStatMessage){
             {getElementStatMessage.textContent = "Successfully sent to Notion!"}
-            setTimeout(() => {getElementStatMessage.textContent = ""}, 1000)
+            setTimeout(() => {getElementStatMessage.textContent = ""}, 3000)
 }
           console.log("Success:", response.reply);
       } 
