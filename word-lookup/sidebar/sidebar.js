@@ -38,7 +38,8 @@ document.addEventListener("DOMContentLoaded", () => {
   })}
 
   const sendToNotion = document.getElementById(sendToNotionButton)
-  if(sendToNotion){sendToNotion.addEventListener("click", inputSaveButton2)}
+  if(sendToNotion){sendToNotion.addEventListener("click", inputSaveButton2)
+  }
   
   loadSettingsTokens();
   initSaveButton();
@@ -190,6 +191,8 @@ async function inputSaveButton2()
   const getElementText = document.getElementById(explanationContent)
   const getElementStatMessage = document.getElementById(statMessage)
 
+
+  
   const trimmedElementInput = getElementInput.value.trim().toLowerCase()
   const trimmedElementText = getElementText.value.trim().toLowerCase()
   if(!trimmedElementInput || !trimmedElementText){return;}
@@ -206,7 +209,10 @@ async function inputSaveButton2()
       // Fix: Keep response evaluation inside block scope
       if (response && (response.status === "success" || response.reply === "Successfully saved to Notion!")) 
         {
-          if(getElementStatMessage){getElementStatMessage.textContent = "Successfully sent to Notion!"}
+          if(getElementStatMessage){
+            {getElementStatMessage.textContent = "Successfully sent to Notion!"}
+            setTimeout(() => {getElementStatMessage.textContent = ""}, 1000)
+}
           console.log("Success:", response.reply);
       } 
       else {
