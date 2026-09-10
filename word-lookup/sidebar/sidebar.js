@@ -5,6 +5,10 @@ Step 2: Word lookup -> API calls to Dictionary, in case of emergency -> will go 
 Step 3: Rendering the results to the user 
 Step 4: Submit button -> submits to notion database -> Notion API called 
 */
+
+
+//ILL CLEANN UP +LATERERER
+
 let currentResult = null;
 let currentBox = null;
 
@@ -17,6 +21,9 @@ const secondInputName = "input-box"
 const explanationContent = "text-areaBox"
 const sendToNotionButton = "saveToNotion2"
 const statMessage = "stat-message"
+
+
+
 // Wrap DOM selections and listeners inside DOMContentLoaded to prevent null errors
 document.addEventListener("DOMContentLoaded", () => {
   const button1 = document.getElementById(saveButton);
@@ -153,7 +160,7 @@ async function loadSettingsTokens() {
   }
 }
 
-
+// This just creates the tags on the html file dynamically 
 function renderDefinition(parsedData, container) {
   const elementId = document.getElementById(container);
   if (!elementId) 
